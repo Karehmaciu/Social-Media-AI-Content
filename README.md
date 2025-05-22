@@ -1,8 +1,8 @@
-# AI Social Media Content
+# Social Media AI Content
 
 A comprehensive application for creating, managing, and sharing social media content across multiple platforms with AI assistance. This Flask-based application helps content creators streamline their workflow with intelligent content generation and management features.
 
-![AI Social Media Content](https://via.placeholder.com/800x400?text=AI+Social+Media+Content)
+![Social Media AI Content](https://via.placeholder.com/800x400?text=Social+Media+AI+Content)
 
 ## Features
 

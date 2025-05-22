@@ -1,13 +1,12 @@
 services:
   - type: web
-    name: ai-social-media-content
+    name: social-media-ai-content
     runtime: python
     plan: free
     buildCommand: pip install --upgrade pip && pip install -r requirements.txt
     startCommand: gunicorn app:app --bind 0.0.0.0:$PORT
-    repo: https://github.com/Karehmaciu/social_media_app.git
+    repo: https://github.com/Karehmaciu/Social-Media-AI-Content.git
     branch: main
-    rootDir: Downloads/social_media_trending_app
     healthCheckPath: /healthz
     envVars:
       - key: FLASK_ENV

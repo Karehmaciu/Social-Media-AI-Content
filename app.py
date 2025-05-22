@@ -564,14 +564,16 @@ if __name__ == '__main__':
     except ImportError:
         print("Error: The 'google-search-results' package (for serpapi) is not installed or not found.")
         print("Please install it by running: pip install google-search-results")
-        exit(1) # Exit if essential dependency is missing
-
+        exit(1) 
+    
+    # Check if TINYMCE_API_KEY is set
+    if not TINYMCE_API_KEY:
+        print("Warning: TINYMCE_API_KEY is not set in .env file. TinyMCE editor might not function correctly.")
+    
     if not openai_api_key:
         print("Warning: OPENAI_API_KEY is not set in .env file. OpenAI features will not work.")
     if not SERP_API_KEY:
         print("Warning: SERP_API_KEY is not set in .env file. Search features will not work.")
-    if not TINYMCE_API_KEY or TINYMCE_API_KEY == 'your_tinymce_api_key_here':
-        print("Warning: TINYMCE_API_KEY is not set or is a placeholder in .env file. TinyMCE editor might not function correctly.")
     
     # Use PORT environment variable if available (for Render deployment)
     port = int(os.environ.get("PORT", 8008))
