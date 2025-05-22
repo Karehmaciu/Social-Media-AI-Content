@@ -2,6 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Saved Posts - Social Media AI Content</title>
     <link
       rel="icon"
@@ -20,6 +21,11 @@
         padding: 20px;
         background: #f8f9fa;
       }
+      @media (max-width: 768px) {
+        body {
+          padding: 10px;
+        }
+      }
       .container {
         max-width: 1200px;
         margin: 0 auto;
@@ -31,6 +37,17 @@
         margin-bottom: 20px;
         padding-bottom: 10px;
         border-bottom: 1px solid #eee;
+      }
+      @media (max-width: 768px) {
+        .nav-menu {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 10px;
+        }
+        .nav-menu h1 {
+          font-size: 1.5rem;
+          margin-bottom: 10px;
+        }
       }
       .nav-menu h1 {
         margin-top: 0;
@@ -55,6 +72,11 @@
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
         gap: 20px;
+      }
+      @media (max-width: 768px) {
+        .posts-container {
+          grid-template-columns: 1fr;
+        }
       }
       .post-card {
         background: white;
@@ -104,6 +126,13 @@
         font-weight: bold;
         font-size: 12px;
       }
+      @media (max-width: 768px) {
+        button {
+          padding: 10px 14px; /* Larger touch target for mobile */
+          width: 100%;
+          margin-bottom: 5px;
+        }
+      }
       button.secondary {
         background-color: #f5f5f5;
         color: #333;
@@ -123,6 +152,12 @@
         display: flex;
         gap: 15px;
         margin-bottom: 10px;
+      }
+      @media (max-width: 768px) {
+        .filters-row {
+          flex-direction: column;
+          gap: 10px;
+        }
       }
       .filter-group {
         flex: 1;
@@ -235,13 +270,13 @@
       {% if posts|length > 0 %}
       <div class="pagination">
         {% if page > 1 %}
-        <button onclick="changePage({{ page - 1 }})">Previous</button>
+        <button onclick="changePage('{{ page - 1 }}')">Previous</button>
         {% endif %}
 
         <span class="page-info">Page {{ page }} of {{ total_pages }}</span>
 
         {% if page < total_pages %}
-        <button onclick="changePage({{ page + 1 }})">Next</button>
+        <button onclick="changePage('{{ page + 1 }}')">Next</button>
         {% endif %}
       </div>
       {% endif %}
@@ -281,7 +316,9 @@
 
       function changePage(page) {
         const currentUrl = new URL(window.location.href);
-        currentUrl.searchParams.set("page", page);
+        // Convert string to number if needed
+        const pageNum = parseInt(page, 10);
+        currentUrl.searchParams.set("page", pageNum);
         window.location.href = currentUrl.toString();
       }
 
