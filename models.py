@@ -122,6 +122,26 @@ class PostsDatabase:
         
         return None
     
+    def update_post(self, post_id, post_data):
+        """Update an existing post"""
+        if not post_id:
+            return False
+            
+        # Check if post exists
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.cursor()
+        cursor.execute("SELECT id FROM posts WHERE id = ?", (post_id,))
+        if not cursor.fetchone():
+            conn.close()
+            return False
+            
+        # Add the post_id to the data
+        post_data['id'] = post_id
+        
+        # Use save_post to update
+        self.save_post(post_data)
+        return True
+        
     def get_all_posts(self, limit=None, offset=0, platform=None):
         """Get all posts with optional filtering"""
         conn = sqlite3.connect(self.db_path)

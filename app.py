@@ -11,6 +11,10 @@ from models import PostsDatabase
 
 load_dotenv()
 
+# Initialize Flask app
+app = Flask(__name__)
+app.secret_key = os.getenv('SECRET_KEY', 'dev_key_for_testing')
+
 # Make sure instance directory exists
 if not os.path.exists('instance'):
     os.makedirs('instance')
@@ -19,6 +23,11 @@ if not os.path.exists('instance'):
 db = PostsDatabase(db_path="instance/posts.db")
 
 # Initialize OpenAI client
+
+@app.route('/')
+def index():
+    return redirect(url_for('saved_posts'))
+
 # Make sure your OPENAI_API_KEY is set in your .env file
 openai_api_key = os.getenv('OPENAI_API_KEY')
 try:
@@ -194,6 +203,17 @@ def create_content():
     except Exception as e:
         print(f"Error getting saved posts: {e}")
         saved_posts = []
+    
+    # Check if we're editing an existing post
+    post_id = request.args.get('post_id')
+    post_content = ''
+    if post_id:
+        try:
+            post = db.get_post(post_id)
+            if post:
+                post_content = post.get('content', '')
+        except Exception as e:
+            print(f"Error loading post content for editing: {e}")
         
     # Default values
     default_values = {
@@ -203,7 +223,8 @@ def create_content():
         'selected_emoji_level': request.args.get('emoji_level', 'light'),
         'topic': request.args.get('topic', ''),
         'cta': request.args.get('cta', ''),
-        'content': ''
+        'content': post_content,
+        'post_id': post_id
     }
     
     return render_template(
@@ -316,8 +337,18 @@ def save_content():
             return jsonify({"error": f"Missing required field: {field}"}), 400
     
     try:
-        post_id = db.save_post(data)
-        return jsonify({"success": True, "post_id": post_id})
+        # Check if we're updating an existing post
+        post_id = data.get('id')
+        if post_id:
+            # Update existing post
+            success = db.update_post(post_id, data)
+            if not success:
+                return jsonify({"error": "Post not found or could not be updated"}), 404
+            return jsonify({"success": True, "post_id": post_id})
+        else:
+            # Create new post
+            post_id = db.save_post(data)
+            return jsonify({"success": True, "post_id": post_id})
     except Exception as e:
         print(f"Error saving content: {e}")
         return jsonify({"error": f"Failed to save content: {str(e)}"}), 500

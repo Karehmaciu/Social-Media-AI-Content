@@ -126,30 +126,42 @@ document.addEventListener('DOMContentLoaded', () => {
     const length = document.getElementById('length').value;
     const emojiLevel = document.getElementById('emoji_level').value;
     
+    // Check if we're editing an existing post by looking for a post_id in the URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const postId = urlParams.get('post_id');
+    
     // Use topic as the title if available
     const title = topic ? `${platform} post about ${topic}` : `${platform} post`;
     
     // Show loading state
-    const saveBtn = document.querySelector('button[value="save"]');
+    const saveBtn = document.querySelector('button[value="save"');
     const originalText = saveBtn.textContent;
     saveBtn.disabled = true;
     saveBtn.textContent = 'Saving...';
+    
+    // Prepare the data object
+    const postData = {
+      title: title,
+      content: content,
+      platform: platform,
+      tone: tone,
+      topic: topic,
+      cta: cta,
+      length: length,
+      emoji_level: emojiLevel
+    };
+    
+    // If we're editing an existing post, include the post_id
+    if (postId) {
+      postData.id = postId;
+    }
     
     fetch('/save_content', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({
-        title: title,
-        content: content,
-        platform: platform,
-        tone: tone,
-        topic: topic,
-        cta: cta,
-        length: length,
-        emoji_level: emojiLevel
-      })
+      body: JSON.stringify(postData)
     })
     .then(response => response.json())
     .then(data => {
